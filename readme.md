@@ -7,6 +7,7 @@ To set up and run this application locally, ensure you have Docker and Docker Co
 Clone this repository:
 
 git clone https://github.com/Vishwasoratur/devops-internship-assignment.git
+
 cd devops-internship-assignment
 
 Navigate to the project root:
