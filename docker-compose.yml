@@ -1,0 +1,74 @@
+# docker-compose.yml
+
+# Specify the Docker Compose file format version
+version: '3.8'
+
+# Define the services (containers) that make up your application
+services:
+  # Service for the Go application
+  service_1:
+    # Use the Dockerfile in the 'service_1' directory to build this image
+    build:
+      context: ./service_1 # Path to the service_1 folder containing its Dockerfile
+    # Expose port 8001 within the Docker network for inter-container communication
+    # This does not publish the port to the host
+    expose:
+      - "8001" # Updated port for Go app
+    # Health check for the Go application (Bonus)
+    # This checks if the /ping endpoint of the Go app responds successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/ping || exit 1"] # Updated port and path for health check
+      interval: 10s # Check every 10 seconds
+      timeout: 5s   # Timeout after 5 seconds
+      retries: 3    # Retry 3 times before considering unhealthy
+      start_period: 10s # Give the container 10 seconds to start before starting health checks
+    # Assign the service to the default bridge network
+    networks:
+      - devops_network
+
+  # Service for the Python application
+  service_2:
+    # Use the Dockerfile in the 'service_2' directory to build this image
+    build:
+      context: ./service_2 # Path to the service_2 folder containing its Dockerfile
+    # Expose port 8002 within the Docker network for inter-container communication
+    expose:
+      - "8002" # Updated port for Python app
+    # Health check for the Python application (Bonus)
+    # This checks if the /ping endpoint of the Python app responds successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8002/ping || exit 1"] # Updated port and path for health check
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    # Assign the service to the default bridge network
+    networks:
+      - devops_network
+
+  # Service for the Nginx reverse proxy
+  nginx:
+    # Use the Dockerfile in the 'nginx' directory to build this image
+    build:
+      context: ./nginx # Path to the nginx folder containing its Dockerfile
+    # Map port 8080 on the host to port 80 in the Nginx container
+    # This makes Nginx accessible from your host machine on localhost:8080
+    ports:
+      - "8080:80"
+    # Nginx depends on service_1 and service_2, meaning these services will start first
+    depends_on:
+      service_1:
+        condition: service_healthy # Nginx starts only if service_1 is healthy (Bonus)
+      service_2:
+        condition: service_healthy # Nginx starts only if service_2 is healthy (Bonus)
+    # Assign the service to the same bridge network
+    networks:
+      - devops_network
+
+# Define the networks
+networks:
+  # This creates a custom bridge network named 'devops_network'
+  # All services connected to this network can communicate with each other using their service names
+  devops_network:
+    driver: bridge
+
