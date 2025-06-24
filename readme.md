@@ -5,13 +5,12 @@ This project demonstrates a multi-service application orchestrated with Docker C
 To set up and run this application locally, ensure you have Docker and Docker Compose installed on your system.
 
 Clone this repository:
-(Assuming you have cloned this repository after pushing to GitHub)
 
 git clone https://github.com/Vishwasoratur/devops-internship-assignment.git
-cd SourceCodeForDevopsAssignment
+cd devops-internship-assignment
 
 Navigate to the project root:
-Ensure your terminal's current directory is SourceCodeForDevopsAssignment, which contains docker-compose.yml, nginx/, service_1/, and service_2/.
+Ensure your terminal's current directory is devops-internship-assignment, which directly contains docker-compose.yml, nginx/, service_1/, and service_2/.
 
 Build and Run the Services:
 This command will build the Docker images for all services (Go, Python, Nginx) and start them up in detached mode. The --build flag ensures images are rebuilt if any Dockerfile or context changes.
